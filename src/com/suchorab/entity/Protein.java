@@ -5,9 +5,10 @@ import java.util.List;
 
 public class Protein implements Cloneable {
 
-    private List<Integer> row, col;
+    private int[][] table; // H = 2 P = 1
     private String chain;
-    private long hydrophobicSize;
+    private int result;
+
 
     public Protein(String chain) {
         this.chain = chain.toUpperCase();
@@ -15,71 +16,47 @@ public class Protein implements Cloneable {
             throw new IllegalArgumentException("must all be P/p or H/h");
         }
         int size = this.chain.length();
-        this.hydrophobicSize = chain.chars().filter(ch -> ch == 'H').count();
-        row = new ArrayList<>();
-        col = new ArrayList<>();
+        if (size % 2 == 0){
+            size++;
+        }
+        table = new int[size][size];
+
         for (int i = 0; i < size; i++) {
-            row.add(0);
-            col.add(i);
+            for (int j = 0; j < size; j++) {
+                table[i][j] = 0;
+            }
         }
     }
 
-    public int getLength() {
-        return chain.length();
+    public int[][] getTable() {
+        return table;
     }
 
-    public boolean isHydrophobic(int index) {
-        return chain.charAt(index) == 'H';
+    public void setTable(int[][] table) {
+        this.table = table;
     }
 
-    public int getRowAtIndex(int index) {
-        return row.get(index);
+    public int getResult() {
+        return result;
     }
 
-    public int getColumnAtIndex(int index) {
-        return col.get(index);
-    }
-
-    public Object clone() {
-        try {
-            Protein ret = (Protein) super.clone();
-            ret.row = this.row;
-            ret.col = this.col;
-            return ret;
-        } catch (CloneNotSupportedException e) {
-            return new RuntimeException(e);
-        }
-    }
-
-    public List<Integer> getRow() {
-        return row;
-    }
-
-    public void setRow(List<Integer> row) {
-        this.row = row;
-    }
-
-    public List<Integer> getCol() {
-        return col;
-    }
-
-    public void setCol(List<Integer> col) {
-        this.col = col;
+    public void setResult(int result) {
+        this.result = result;
     }
 
     public String getChain() {
         return chain;
     }
 
-    public void setChain(String chain) {
-        this.chain = chain;
-    }
-
-    public long getHydrophobicSize() {
-        return hydrophobicSize;
-    }
-
-    public void setHydrophobicSize(long hydrophobicSize) {
-        this.hydrophobicSize = hydrophobicSize;
+    public Object clone() {
+        try {
+            Protein ret = (Protein) super.clone();
+            ret.table = this.table;
+            ret.chain = this.chain;
+            ret.result = this.result;
+            return ret;
+        } catch (CloneNotSupportedException e) {
+            return new RuntimeException(e);
+        }
     }
 }
