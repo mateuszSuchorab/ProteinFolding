@@ -7,7 +7,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("----- START -----");
         ProteinFolding proteinFolding = new ProteinFolding();
-        proteinFolding.startSearch("HPHPPHHPHPPHPHHPPHPHPPHPHHPPHP"); // "HPHPPHHPHPPHPHHPPHPH"
+        proteinFolding.startSearch("HPHPPHHPHPPHPHHPPHPHPPHPHHPPHPHPHPPHHPHPPHPHHPPHPHPPHPHHPPHP"); // "HPHPPHHPHPPHPHHPPHPH"
         System.out.println("----- FINISH -----");
     }
 }

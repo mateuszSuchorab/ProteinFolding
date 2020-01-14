@@ -35,7 +35,7 @@ public class ProteinFolding {
                 System.out.println("Generated in: " + (System.nanoTime() - start) / 1000000000);
                 Protein bestProtein = proteinMap.entrySet().stream().max((entry1, entry2) -> entry1.getKey() > entry2.getKey() ? 1 : -1).get().getValue();
                 printTable(bestProtein.getTable());
-                System.out.println("Result: " + bestProtein.getResult());
+                System.out.println("Result: -" + bestProtein.getResult());
                 System.out.println("Generated and filtered in : " + (System.nanoTime() - start) / 1000000000 + " s");
             }
         } catch (InterruptedException e) {
