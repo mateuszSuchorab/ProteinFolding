@@ -3,31 +3,44 @@ package com.suchorab.service;
 import com.suchorab.entity.Move;
 import com.suchorab.entity.Protein;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class ProteinFolding {
 
-    private String chain;
-    List<Protein> proteinList = new ArrayList<>();
+    public void startSearch(String chain) {
+        Map<Integer, Protein> proteinMap = new HashMap<>();
+        Runnable task = () -> {
+            for (long stop = System.nanoTime() + TimeUnit.SECONDS.toNanos(30); stop > System.nanoTime(); ) { // Loop for 30 seconds
+                Protein protein = generateResults(chain);
+                proteinMap.put(protein.getResult(), protein);  //Thread.currentThread().getId(); -> id of currency thread
+            }
+        };
 
-    public ProteinFolding(String chain) {
-        this.chain = chain;
-    }
-
-    public void startSearch() {
+        ExecutorService es = Executors.newCachedThreadPool();
+        int availableProcessors = Runtime.getRuntime().availableProcessors(); // get a number of available processors
         long start = System.nanoTime();
-        for (long stop = System.nanoTime() + TimeUnit.SECONDS.toNanos(30); stop > System.nanoTime(); ) { // Loop for 30 seconds
-            proteinList.add(generateResults(chain));
+        for (int i = 0; i <= availableProcessors; i++) {
+            es.execute(task);
         }
-        System.out.println("Generated in: " + (System.nanoTime() - start) / 1000000000);
-        Protein protein = proteinList.stream()
-                .max(Comparator.comparing(Protein::getResult))
-                .orElseThrow(NoSuchElementException::new);
-        printTable(protein.getTable());
-        System.out.println("Result: " + protein.getResult());
-        System.out.println("Protein list size: " + proteinList.size());
-        System.out.println("Generated and filtered: " + (System.nanoTime() - start) / 1000000000);
+        es.shutdown();
+
+        try {
+            boolean finished = es.awaitTermination(1, TimeUnit.MINUTES); // check if the threads finished after one minute
+            if (finished) {
+                System.out.println("Generated in: " + (System.nanoTime() - start) / 1000000000);
+                Protein bestProtein = proteinMap.entrySet().stream().max((entry1, entry2) -> entry1.getKey() > entry2.getKey() ? 1 : -1).get().getValue();
+                printTable(bestProtein.getTable());
+                System.out.println("Result: " + bestProtein.getResult());
+                System.out.println("Generated and filtered in : " + (System.nanoTime() - start) / 1000000000 + " s");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private Protein generateResults(String chain) {

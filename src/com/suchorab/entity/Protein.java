@@ -1,8 +1,5 @@
 package com.suchorab.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Protein implements Cloneable {
 
     private int[][] table; // H = 2 P = 1
@@ -16,7 +13,7 @@ public class Protein implements Cloneable {
             throw new IllegalArgumentException("must all be P/p or H/h");
         }
         int size = this.chain.length();
-        if (size % 2 == 0){
+        if (size % 2 == 0) {
             size++;
         }
         table = new int[size][size];
