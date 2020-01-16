@@ -32,7 +32,7 @@ public class ProteinFolding {
         try {
             boolean finished = es.awaitTermination(1, TimeUnit.MINUTES); // check if the threads finished after one minute
             if (finished) {
-                System.out.println("Generated in: " + (System.nanoTime() - start) / 1000000000);
+                System.out.println("Generated in: " + (System.nanoTime() - start) / 1000000000+ " s");
                 Protein bestProtein = proteinMap.entrySet().stream().max((entry1, entry2) -> entry1.getKey() > entry2.getKey() ? 1 : -1).get().getValue();
                 printTable(bestProtein.getTable());
                 System.out.println("Result: -" + bestProtein.getResult());
